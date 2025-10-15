@@ -15,6 +15,7 @@ func main() {
 	*/
 	mux.HandleFunc("/", home)
 	mux.HandleFunc("/about", about)
+	mux.HandleFunc("/contact", contact)
 	mux.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("ui/static"))))
 
 	log.Println("Starting server on :8080")

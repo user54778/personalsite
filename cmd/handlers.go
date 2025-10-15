@@ -8,6 +8,8 @@ import (
 	"time"
 )
 
+// TODO: re-organize to reduce code re-use
+// TODO: have faster template loading
 func home(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/" {
 		http.NotFound(w, r)
@@ -55,5 +57,49 @@ func about(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.Write([]byte("About\n"))
+	files := []string{
+		os.ExpandEnv("$HOME/code/personalsite/ui/html/pages/base.tmpl"),
+		os.ExpandEnv("$HOME/code/personalsite/ui/html/pages/about.tmpl"),
+	}
+
+	ts, err := template.ParseFiles(files...)
+	if err != nil {
+		log.Println(err)
+		http.Error(w, "Internal Server Error", 500)
+		return
+	}
+
+	err = ts.ExecuteTemplate(w, "base", nil)
+	if err != nil {
+		log.Println(err)
+		http.Error(w, "Internal Server Error", 500)
+		return
+	}
+}
+
+func contact(w http.ResponseWriter, r *http.Request) {
+	// TODO: add css to style this page
+	if r.URL.Path != "/contact" {
+		http.NotFound(w, r)
+		return
+	}
+
+	files := []string{
+		os.ExpandEnv("$HOME/code/personalsite/ui/html/pages/base.tmpl"),
+		os.ExpandEnv("$HOME/code/personalsite/ui/html/pages/contact.tmpl"),
+	}
+
+	ts, err := template.ParseFiles(files...)
+	if err != nil {
+		log.Println(err)
+		http.Error(w, "Internal Server Error", 500)
+		return
+	}
+
+	err = ts.ExecuteTemplate(w, "base", nil)
+	if err != nil {
+		log.Println(err)
+		http.Error(w, "Internal Server Error", 500)
+		return
+	}
 }
